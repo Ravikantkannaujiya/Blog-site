@@ -23,7 +23,7 @@ const activityToken = async function (req, res, next) {
         if (!validtoken) { //after decode some other value is their than it will say invalid
             return res.status(403).send({ status: false, msg: "The token is invalid" })
         }
-        req.validtoken = validtoken;       //here we have created a key value pair=> key=validtoken and value=validtoken
+        req.authorId = validtoken.authorId;       //here we have created a key value pair=> key=validtoken and value=validtoken
         next()                             //and send this key value pair in the request part
     }                                      // for the further use in the Api
     catch (error) {
