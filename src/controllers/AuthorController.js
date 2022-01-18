@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
-const authorModel = require("../models/authorModel");
+const authorModel = require("../models/AuthorModel");
 
 const checkforbody = function (value) {
     let check = Object.keys(value).length > 0; //Object.keys(objectname)=> gives array of keys. If we add .length than it will give length of keys.

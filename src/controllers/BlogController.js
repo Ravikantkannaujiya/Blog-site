@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 const blogModel = require("../models/blogModel")
-const authorModel = require("../models/authorModel");
+const authorModel = require("../models/AuthorModel");
 
 const checkfordetails = function (value) {
     let check = Object.keys(value).length > 0; //Object.keys(objectname)=> gives array of keys. If we add .length than it will give length of keys.
