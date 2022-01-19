@@ -69,13 +69,13 @@ const createBlog = async function (req, res) {
             res.status(400).send({ status: false, message: 'Blog subcategory is required' })
             return
         }
-
+        //if isPublished == true   than   we will give "publishedAt"
         if (isPublished == true) {
             let blogData = { title, body, authorId, tags, category, subcategory, isPublished, publishedAt: new Date() };
             const newBlog = await blogModel.create(blogData)
             return res.status(201).send({ status: true, message: 'New blog created successfully', data: newBlog })
         }
-
+        //if isPublished == false   than   we will  NOT give "publishedAt"
         if (isPublished == false) {
             let blogData = { title, body, authorId, tags, category, subcategory, isPublished };
             const newBlog = await blogModel.create(blogData)
@@ -254,10 +254,10 @@ const deleteBlogByAttribute = async function (req, res) {
 
         let checkvalidauthor = await blogModel.find(query)
         let validAuthor = checkvalidauthor.filter((blog) => {
-          return  blog.authorId == authorIdFromToken
+            return blog.authorId == authorIdFromToken
         })
 
-        if (validAuthor.length==0) {
+        if (validAuthor.length == 0) {
             return res.status(401).send({ status: false, message: `Unauthorized access! Owner info doesn't match` });
         }
         //this 263 line is written in down because first this api should say u r authorized or not --- and ---than it should say that blog found or not
@@ -265,12 +265,12 @@ const deleteBlogByAttribute = async function (req, res) {
             return res.status(404).send({ status: false, message: `Blog not found` })
         }
 
-        let blogsToDelete=[];
-        for(let i=0;i<validAuthor.length;i++){
+        let blogsToDelete = [];
+        for (let i = 0; i < validAuthor.length; i++) {
             blogsToDelete.push((validAuthor[i]._id).toString())
         }
 
-        await blogModel.updateMany({_id:{$in:blogsToDelete}}, { isDeleted: true, deletedAt: new Date() }, { new: true });
+        await blogModel.updateMany({ _id: { $in: blogsToDelete } }, { isDeleted: true, deletedAt: new Date() }, { new: true });
 
         res.status(200).send({ status: true, message: 'Blog(s) deleted successfully' });
 
