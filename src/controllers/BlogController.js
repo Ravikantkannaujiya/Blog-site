@@ -23,8 +23,8 @@ const isValidArray = function (arrayToCheck) {
 
 const createBlog = async function (req, res) {
     try {
-        let blogfrombody = req.body
-        if (!checkfordetails(blogfrombody)) {
+        let requestBody = req.body
+        if (!checkfordetails(requestBody)) {
             return res.status(400).send({ status: false, message: 'Please provide blog details' })
         }
 
@@ -50,7 +50,7 @@ const createBlog = async function (req, res) {
             return
         }
 
-        if (!isValid(category)) {
+        if (!category) {
             res.status(400).send({ status: false, message: 'Blog category is required' })
             return
         }
@@ -86,6 +86,7 @@ const createBlog = async function (req, res) {
         res.status(500).send({ status: false, message: error.message });
     }
 }
+
 
 const getAllBlogs = async function (req, res) {
     try {
@@ -162,10 +163,10 @@ const updateBlogWithNewFeatures = async function (req, res) {
         if (isValid(body)) {
             await blogModel.findByIdAndUpdate({ _id: req.params.blogId }, { $set: { body: body } }, { new: true })
         }
-        if (isValid(tags) && isValidArray(tags)) {
+        if (isValidArray(tags)) {
             await blogModel.findByIdAndUpdate({ _id: req.params.blogId }, { $addToSet: { tags: { $each: tags } } }, { new: true })
         }
-        if (isValid(subcategory && isValidArray(subcategory))) {
+        if (isValidArray(subcategory)) {
             await blogModel.findByIdAndUpdate({ _id: req.params.blogId }, { $addToSet: { subcategory: { $each: subcategory } } }, { new: true })
         }
         if (isPublished == true) {
@@ -179,8 +180,7 @@ const updateBlogWithNewFeatures = async function (req, res) {
         return res.status(200).send({ status: true, msg: "Blog updated successfully", data: updatedBlog });
 
     } catch (error) {
-        return res.status(500).send({ status: false, msg: "Internal Server Error" });
-
+        res.status(500).send({ status: false, message: error.message });
     }
 };
 
@@ -219,6 +219,7 @@ const deleteBlogByID = async function (req, res) {
 };
 
 
+
 const deleteBlogByAttribute = async function (req, res) {
     try {
         const queryParams = req.query
@@ -253,16 +254,24 @@ const deleteBlogByAttribute = async function (req, res) {
 
         let checkvalidauthor = await blogModel.find(query)
         let validAuthor = checkvalidauthor.filter((blog) => {
-            return blog.authorId == authorIdFromToken
+          return  blog.authorId == authorIdFromToken
         })
-        if (!validAuthor) {
+
+        if (validAuthor.length==0) {
             return res.status(401).send({ status: false, message: `Unauthorized access! Owner info doesn't match` });
         }
         //this 263 line is written in down because first this api should say u r authorized or not --- and ---than it should say that blog found or not
         if (!checkvalidauthor) {
             return res.status(404).send({ status: false, message: `Blog not found` })
         }
-        let blog = await blogModel.findOneAndUpdate(query, { isDeleted: true, deletedAt: new Date() }, { new: true });
+
+        let blogsToDelete=[];
+        for(let i=0;i<validAuthor.length;i++){
+            blogsToDelete.push((validAuthor[i]._id).toString())
+        }
+
+        await blogModel.updateMany({_id:{$in:blogsToDelete}}, { isDeleted: true, deletedAt: new Date() }, { new: true });
+
         res.status(200).send({ status: true, message: 'Blog(s) deleted successfully' });
 
     } catch (error) {
