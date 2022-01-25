@@ -2,9 +2,9 @@ const mongoose = require('mongoose')
 
 const blogSchema = new mongoose.Schema({
     title: {
-        type: String,
+        type: String, 
         required: 'Title is Required',
-        trim: true
+        trim: true 
     },
     body: {
         type: String,

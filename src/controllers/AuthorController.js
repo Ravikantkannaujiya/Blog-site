@@ -14,8 +14,8 @@ const validDetail = function (value) {
 }
 
 const validfortitle = function (value) {
-    if (['Mr', 'Mrs', 'Miss', 'Mast'].indexOf(value) == -1) { return false } //mean's he have not found it
-    if (['Mr', 'Mrs', 'Miss', 'Mast'].indexOf(value) > -1) { return true }   //mean's he have found it
+    if (['Mr', 'Mrs', 'Miss', ].indexOf(value) == -1) { return false } //mean's he have not found it
+    if (['Mr', 'Mrs', 'Miss', ].indexOf(value) > -1) { return true }   //mean's he have found it
 }
 
 const createAuthor = async function (req, res) {

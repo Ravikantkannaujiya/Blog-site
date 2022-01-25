@@ -13,7 +13,7 @@ const authorSchema = new mongoose.Schema({
     },
     title: {
         type: String,
-        enum: ['Mr', 'Mrs', 'Miss', 'Mast'],
+        enum: ['Mr', 'Mrs', 'Miss', ],
         trim: true,
         required: 'Title is required'
     },
